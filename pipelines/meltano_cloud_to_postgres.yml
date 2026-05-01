@@ -1,0 +1,19 @@
+version: pipelines/v0.1
+
+data_components:
+  - tap-meltano-cloud
+  - target-postgres
+
+inline_script: |
+  set -e
+
+  export MELTANO_ENVIRONMENT=dev
+  meltano environment add dev || true
+
+  meltano install extractor tap-meltano-cloud
+  meltano install loader target-postgres
+
+  meltano run tap-meltano-cloud target-postgres
+
+timeout: 3600
+max_retries: 0
